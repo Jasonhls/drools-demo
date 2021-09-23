@@ -1,0 +1,18 @@
+package com.cn.drools;
+import com.cn.drools.pojo.People
+import com.cn.drools.pojo.Cat
+dialect  "java"
+
+//相同.drl文件中可以继承多组规则如下：
+rule "man2"  //rule 名称不能重复
+    when
+        $p : People(sex == 1 && drlType == "people")
+    then
+        System.out.println($p.getName() + "是男孩");
+end
+rule "cat"
+    when
+        $c : Cat(sex == 1 && $c.getName().equals("金"))
+    then
+        System.out.println($c.getName() + "是公的");
+ end

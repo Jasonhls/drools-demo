@@ -1,0 +1,76 @@
+package com.cn.drools;
+import com.cn.drools.pojo.PointDomain
+dialect  "java"
+
+//我们假定如下情景：网站伴随业务产生而进行的积分发放操作。比如支付宝信用卡还款奖励积分等。
+//我们定义一下发放规则：
+//积分的发放参考因素有：交易笔数、交易金额数目、信用卡还款次数、生日特别优惠等。
+//定义规则：
+// 过生日，则加10分，并且将当月交易比数翻倍后再计算积分
+// 2011-01-08 – 2011-08-08每月信用卡还款3次以上，每满3笔赠送30分
+// 当月购物总金额100以上，每100元赠送10分
+// 当月购物次数5次以上，每五次赠送50分
+// 特别的，如果全部满足了要求，则额外奖励100分
+// 发生退货，扣减10分
+// 退货金额大于100，扣减100分
+
+
+//过生日，则加10分，并且将当月交易比数翻倍后再计算积分
+rule birthdaypoint
+    salience 100
+    lock-on-active true
+    when
+        $pointDomain : PointDomain(birthDay == true)
+    then
+        $pointDomain.setPoint($pointDomain.getPoint() + 10);
+        $pointDomain.setBackNums($pointDomain.getBackNums() * 2);
+        $pointDomain.setBuyMoney($pointDomain.getBuyMoney() * 2);
+        $pointDomain.setBillThisMonth($pointDomain.getBillThisMonth() * 2);
+        $pointDomain.recordPointLog($pointDomain.getUserName(), "birthdayPoint");
+end
+
+//2021-09-17 15:59:59 2021-10-17 15:59:59 每月信用卡还款3次以上，每满3笔赠送30分
+rule billThisMonthPoint
+    salience 99
+    lock-on-active true
+    date-effective "2021-09-17 15:59:59"
+    date-expires "2021-10-18 15:59:59"
+    when
+        $pointDomain : PointDomain(billThisMonth >= 3)
+    then
+        $pointDomain.setPoint($pointDomain.getPoint() + $pointDomain.getBillThisMonth() / 3 * 30);
+        $pointDomain.recordPointLog($pointDomain.getUserName(), "billThisMonthPoint");
+ end
+
+//当月购物总金额100以上，每100元赠送10分
+rule buyMoneyPoint
+    salience 98
+    lock-on-active true
+    when
+        $pointDomain : PointDomain(buyMoney >= 100)
+    then
+        $pointDomain.setPoint($pointDomain.getPoint() + (int)$pointDomain.getBuyMoney() / 100 * 10);
+        $pointDomain.recordPointLog($pointDomain.getUserName(), "buyMoneyPoint");
+end
+
+//当月购买次数5次以上，每五次赠送50分
+rule buyNumsPoint
+    salience 97
+    lock-on-active true
+    when
+        $pointDomain : PointDomain(buyNums >= 5)
+    then
+        $pointDomain.setPoint($pointDomain.getPoint() + $pointDomain.getBuyNums() / 5 * 50);
+        $pointDomain.recordPointLog($pointDomain.getUserName(), "buyNumsPoint");
+end
+
+//特别的，如果全部满足了条件，则额外奖励100分
+rule allFitPoint
+    salience 96
+    lock-on-active true
+    when
+        $pointDomain : PointDomain(buyNums >= 5 && billThisMonth >= 3 && buyMoney >= 100)
+    then
+        $pointDomain.setPoint($pointDomain.getPoint() + 100);
+        $pointDomain.recordPointLog($pointDomain.getUserName(), "allFitPoint");
+end

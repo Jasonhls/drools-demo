@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<kmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.drools.org/xsd/kmodule">
+    <kbase packages="com.cn.drools.examples.helloworld">
+        <ksession name="HelloWorldKS"/>
+    </kbase>
+
+    <kbase packages="com.cn.drools.examples.state.a">
+        <ksession name="StateUsingSalience"/>
+    </kbase>
+
+    <kbase packages="com.cn.drools.examples.state.agendagroup">
+        <ksession name="StateUsingAgendaGroup"/>
+    </kbase>
+
+    <kbase packages="com.cn.drools.examples.fibonacci">
+        <ksession name="fibonacciKS"/>
+    </kbase>
+
+    <kbase packages="com.cn.drools.productrule">
+        <ksession name="productRuleKS"/>
+    </kbase>
+</kmodule>

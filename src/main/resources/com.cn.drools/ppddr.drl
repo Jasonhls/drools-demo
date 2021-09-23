@@ -1,0 +1,19 @@
+package com.cn.drools;
+
+import com.cn.drools.pojo.Product
+
+rule Offer4Diamond
+    when
+        productObject:Product(type == 'DIAMOND')
+    then
+        productObject.setDiscount(15);
+        System.out.println(productObject.getDiscount());
+end
+
+rule offer4Gold
+    when
+        productObject:Product(type == 'GOLD')
+    then
+        productObject.setDiscount(25);
+        System.out.println(productObject.getDiscount());
+end

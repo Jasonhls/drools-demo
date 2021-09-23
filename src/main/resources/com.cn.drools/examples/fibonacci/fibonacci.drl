@@ -1,0 +1,31 @@
+package com.cn.drools.examples.fibonacci;
+import com.cn.drools.pojo.Fibonacci
+dialect  "java"
+
+rule "Recurse"
+    salience 10
+    when
+        f : Fibonacci(value == -1)
+        not ( Fibonacci(sequence == 1))
+    then
+        insert(new Fibonacci(f.sequence - 1));
+        System.out.println("recurse for " + f.sequence);
+end
+
+rule "BootStrap"
+    when
+        f : Fibonacci(sequence == 1 || sequence == 2, value == -1)
+    then
+        modify(f){value = 1};
+        System.out.println(f.getSequence() + " == " + f.value);
+end
+
+rule "Calculate"
+    when
+        f1 : Fibonacci(s1 : sequence, value != -1)
+        f2 : Fibonacci(sequence == (s1 + 1), v2 : value != -1)
+        f3 : Fibonacci(s3 : sequence == (f2.sequence + 1), value == -1)
+    then
+        modify(f3){ value = f1.value + v2};
+        System.out.println(s3 + " == " + f3.value);
+end

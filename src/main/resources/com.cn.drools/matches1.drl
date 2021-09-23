@@ -1,0 +1,10 @@
+package com.cn.drools;
+import com.cn.drools.pojo.Person
+dialect  "java"
+
+rule "matches1"
+    when
+        Person(country matches "(USA)?\\S*UK")
+    then
+        System.out.println("匹配");
+end

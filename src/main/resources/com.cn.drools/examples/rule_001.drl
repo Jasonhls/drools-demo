@@ -1,0 +1,12 @@
+package com.cn.drools.examples;
+import com.cn.drools.pojo.demo.Profession;
+import com.cn.drools.pojo.demo.Person;
+
+dialect  "java"
+
+rule "rule_001"
+    when
+        $pr : Person(age > 15) $pf : Profession(title)
+    then
+
+end

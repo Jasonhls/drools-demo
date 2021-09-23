@@ -1,0 +1,46 @@
+package com.cn.drools.examples.state.agendagroup;
+import com.cn.drools.pojo.State
+dialect  "java"
+
+declare type State
+    @propertyChangeSupport
+end
+
+rule "Bootstrap"
+  when
+    a : State(name == "A", state == NOTRUN )
+  then
+    System.out.println(a.getName() + " finished" );
+    a.setState( com.cn.drools.pojo.State.FINISHED );
+end
+
+rule "A to B"
+    when
+        State(name == "A", state == FINISHED)
+        b : State(name == "B", state == NOTRUN)
+    then
+        System.out.println(b.getName() + " finished");
+        b.setState( com.cn.drools.pojo.State.FINISHED );
+end
+
+rule "B to C"
+    agenda-group "B to C"
+    auto-focus true
+  when
+    State(name == "B", state == State.FINISHED )
+    c : State(name == "C", state == State.NOTRUN )
+  then
+    System.out.println(c.getName() + " finished" );
+    c.setState( com.cn.drools.pojo.State.FINISHED );
+    kcontext.getKnowledgeRuntime().getAgenda().getAgendaGroup( "B to D" ).setFocus();
+end
+
+rule "B to D"
+    agenda-group "B to D"
+  when
+    State(name == "B", state == State.FINISHED )
+    d : State(name == "D", state == State.NOTRUN )
+  then
+    System.out.println(d.getName() + " finished" );
+    d.setState( com.cn.drools.pojo.State.FINISHED );
+end

@@ -1,0 +1,12 @@
+package com.cn.drools;
+import com.cn.drools.pojo.People
+dialect  "java"
+
+rule "girl2"
+    when
+        $p : People(sex == 0,$sex : sex && drlType == "people")
+    then
+        System.out.println("girl2规则执行");
+        System.out.println($p);
+        System.out.println($sex);
+end
